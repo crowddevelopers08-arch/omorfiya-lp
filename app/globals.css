@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fff9f7;
+  --foreground: #241c1c;
+  --font-ui-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-ui-serif: "Times New Roman", Times, serif;
+  --font-ui-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-ui-sans);
+  --font-serif: var(--font-ui-serif);
+  --font-mono: var(--font-ui-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-ui-sans);
+}
+
+html { scroll-behavior: smooth; }
+
+.hero-reveal { animation: hero-reveal .75s cubic-bezier(.2,.8,.2,1) both; }
+.hero-delay-1 { animation-delay: .05s; }
+.hero-delay-2 { animation-delay: .14s; }
+.hero-delay-3 { animation-delay: .23s; }
+.hero-delay-4 { animation-delay: .32s; }
+.hero-delay-5 { animation-delay: .41s; }
+.hero-delay-6 { animation-delay: .5s; }
+
+@keyframes hero-reveal {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-reveal { animation: none; }
+  html { scroll-behavior: auto; }
+}
