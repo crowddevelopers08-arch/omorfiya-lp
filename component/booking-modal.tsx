@@ -85,7 +85,7 @@ export default function BookingModal({ isOpen, onClose }: { isOpen: boolean; onC
 
       form.reset();
       onClose();
-      router.push("/thank-you");
+      router.push("/thank-you-cm");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
