@@ -30,7 +30,7 @@ export default function EquipmentRentalHero() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          source: "Omorrfiya-HT-Form",
+          source: "Omorfiya-HT-Form",
           sheetTab: "ht-leads",
           concern: "Hair Transplant",
           name: formData.get("name"),

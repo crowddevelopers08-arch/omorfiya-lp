@@ -55,7 +55,7 @@ function toText(value: unknown): string {
 
 function normalizeSubmission(body: Record<string, unknown>): SubmissionBody {
   return {
-    source: toText(body.source) || 'Omorrfiya-Form-leads',
+    source: toText(body.source) || 'Omorfiya-Form-leads',
     name: toText(body.name),
     phone: toText(body.phone),
     email: toText(body.email),
