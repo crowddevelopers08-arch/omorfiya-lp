@@ -5,10 +5,14 @@
  * standalone Apps Script bound to a Google Sheet. Deploy steps below.
  *
  * It matches the payload sent by app/api/submissions/route.ts's pushToSheet():
- *   { timestamp, source, name, phone, concern, pageUrl, url, telecrm,
- *     rating, callback, isReview, headers, row }
- * where `row` is already ordered to match `headers`
- * (['Timestamp','Source','Name','Phone','Concern','URL','TeleCRM']).
+ *   { sheet, timestamp, source, name, phone, email, concern, pageUrl, url,
+ *     telecrm, rating, callback, isReview, headers, row }
+ * where `row` is already ordered to match `headers`.
+ *
+ * `sheet` is optional and names the tab to write to:
+ *   - omitted            → main "Leads" tab   (['Timestamp','Source','Name','Phone','Concern','URL','TeleCRM'])
+ *   - "ht-leads"         → hair-transplant tab (['Timestamp','Source','Name','Phone','Email','URL','TeleCRM'])
+ * Each tab gets its header row written automatically the first time it is used.
  *
  * ── Deploy ──────────────────────────────────────────────────────────────
  * 1. Open (or create) the Google Sheet you want leads to land in.
@@ -29,36 +33,51 @@
  * ─────────────────────────────────────────────────────────────────────────
  */
 
-// Change this if you want leads written to a specific tab instead of the
-// spreadsheet's first/active sheet.
+// Default tab for leads that don't name a `sheet` in the payload.
 const SHEET_NAME = "Leads";
 
+// Fallback header rows per tab, used only if the payload omits `headers`.
 const DEFAULT_HEADERS = ["Timestamp", "Source", "Name", "Phone", "Concern", "URL", "TeleCRM"];
+const HT_HEADERS = ["Timestamp", "Source", "Name", "Phone", "Email", "URL", "TeleCRM"];
 
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
-    const sheet = getSheet_();
+    const tabName = data.sheet && String(data.sheet).trim() ? String(data.sheet).trim() : SHEET_NAME;
+    const sheet = getSheet_(tabName);
 
-    // Write the header row once, the first time the sheet is used.
+    // Write the header row once, the first time the tab is used.
     if (sheet.getLastRow() === 0) {
-      sheet.appendRow(data.headers && data.headers.length ? data.headers : DEFAULT_HEADERS);
+      const fallbackHeaders = tabName === "ht-leads" ? HT_HEADERS : DEFAULT_HEADERS;
+      sheet.appendRow(data.headers && data.headers.length ? data.headers : fallbackHeaders);
     }
 
     // Prefer the pre-built row array the website already sends (kept in
     // sync with `headers`); fall back to individual fields just in case.
-    const row =
-      data.row && data.row.length
-        ? data.row
-        : [
-            data.timestamp || new Date(),
-            data.source || "",
-            data.name || "",
-            data.phone || "",
-            data.concern || "",
-            data.pageUrl || data.url || "",
-            data.telecrm || "",
-          ];
+    let row;
+    if (data.row && data.row.length) {
+      row = data.row;
+    } else if (tabName === "ht-leads") {
+      row = [
+        data.timestamp || new Date(),
+        data.source || "",
+        data.name || "",
+        data.phone || "",
+        data.email || "",
+        data.pageUrl || data.url || "",
+        data.telecrm || "",
+      ];
+    } else {
+      row = [
+        data.timestamp || new Date(),
+        data.source || "",
+        data.name || "",
+        data.phone || "",
+        data.concern || "",
+        data.pageUrl || data.url || "",
+        data.telecrm || "",
+      ];
+    }
 
     sheet.appendRow(row);
 
@@ -74,10 +93,11 @@ function doGet() {
   return jsonResponse_({ status: "ok", message: "Omorrfiya lead submission endpoint is live." });
 }
 
-function getSheet_() {
+function getSheet_(name) {
+  const tabName = name || SHEET_NAME;
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(SHEET_NAME);
-  if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
+  let sheet = ss.getSheetByName(tabName);
+  if (!sheet) sheet = ss.insertSheet(tabName);
   return sheet;
 }
 

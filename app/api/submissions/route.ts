@@ -14,16 +14,32 @@ const HEADERS = [
   'TeleCRM',
 ];
 
+// Hair-transplant landing page leads land in their own CSV + their own
+// Google Sheet tab ("ht-leads"), with an Email column instead of Concern/TeleCRM.
+const HT_SHEET_TAB = 'ht-leads';
+const HT_FILE_PATH = path.join(DATA_DIR, 'ht-leads.csv');
+const HT_HEADERS = [
+  'Timestamp',
+  'Source',
+  'Name',
+  'Phone',
+  'Email',
+  'URL',
+  'TeleCRM',
+];
+
 export const runtime = 'nodejs';
 
 type SubmissionBody = {
   source: string;
   name: string;
   phone: string;
+  email: string;
   concern: string;
   pageUrl: string;
   rating: string;
   callback: string;
+  sheetTab: string;
 };
 
 type TelecrmResponse = Record<string, unknown> & {
@@ -42,10 +58,12 @@ function normalizeSubmission(body: Record<string, unknown>): SubmissionBody {
     source: toText(body.source) || 'Omorrfiya-Form-leads',
     name: toText(body.name),
     phone: toText(body.phone),
+    email: toText(body.email),
     concern: toText(body.concern),
     pageUrl: toText(body.pageUrl),
     rating: toText(body.rating),
     callback: toText(body.callback),
+    sheetTab: toText(body.sheetTab),
   };
 }
 
@@ -61,16 +79,16 @@ function rowToCsv(row: string[]) {
   return row.map(csvEscape).join(',');
 }
 
-function ensureCsvFile() {
+function ensureCsvFile(filePath: string = FILE_PATH, headers: string[] = HEADERS) {
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  if (!fs.existsSync(FILE_PATH)) {
-    fs.writeFileSync(FILE_PATH, `${rowToCsv(HEADERS)}\n`, 'utf8');
+  if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, `${rowToCsv(headers)}\n`, 'utf8');
   }
 }
 
-function appendLocalRow(row: string[]) {
-  ensureCsvFile();
-  fs.appendFileSync(FILE_PATH, `${rowToCsv(row)}\n`, 'utf8');
+function appendLocalRow(row: string[], filePath: string = FILE_PATH, headers: string[] = HEADERS) {
+  ensureCsvFile(filePath, headers);
+  fs.appendFileSync(filePath, `${rowToCsv(row)}\n`, 'utf8');
 }
 
 function getSheetWebhookUrl() {
@@ -83,28 +101,27 @@ function getSheetWebhookUrl() {
   ).trim();
 }
 
-async function pushToSheet(body: SubmissionBody, timestamp: string, telecrmStatus: string) {
+async function pushToSheet(
+  body: SubmissionBody,
+  timestamp: string,
+  telecrmStatus: string,
+  opts: { sheetTab?: string; headers: string[]; row: string[] },
+) {
   const url = getSheetWebhookUrl();
   if (!url) return null;
 
-  const row = [
-    timestamp,
-    body.source,
-    body.name,
-    body.phone,
-    body.concern,
-    body.pageUrl,
-    telecrmStatus,
-  ];
+  const { sheetTab, headers, row } = opts;
 
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({
+      sheet: sheetTab || undefined,
       timestamp,
       source: body.source,
       name: body.name,
       phone: body.phone,
+      email: body.email,
       concern: body.concern,
       pageUrl: body.pageUrl,
       url: body.pageUrl,
@@ -112,7 +129,7 @@ async function pushToSheet(body: SubmissionBody, timestamp: string, telecrmStatu
       rating: body.rating,
       callback: body.callback,
       isReview: body.source === REVIEW_SOURCE,
-      headers: HEADERS,
+      headers,
       row,
     }),
   });
@@ -252,9 +269,15 @@ export async function POST(req: NextRequest) {
     const rawBody = await req.json();
     const body = normalizeSubmission(rawBody);
 
-    if (!body.name || !body.phone || !body.concern) {
+    // Hair-transplant landing page leads go to their own tab / CSV.
+    const isHt = body.sheetTab === HT_SHEET_TAB;
+
+    if (!body.name || !body.phone || (!isHt && !body.concern)) {
       return NextResponse.json(
-        { success: false, error: 'Name, phone, and concern are required' },
+        {
+          success: false,
+          error: isHt ? 'Name and phone are required' : 'Name, phone, and concern are required',
+        },
         { status: 400 },
       );
     }
@@ -262,18 +285,15 @@ export async function POST(req: NextRequest) {
     const timestamp = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
     const telecrmResult = await pushToTeleCRM(body);
     const telecrmStatus = getTelecrmStatus(telecrmResult);
-    const row = [
-      timestamp,
-      body.source,
-      body.name,
-      body.phone,
-      body.concern,
-      body.pageUrl,
-      telecrmStatus,
-    ];
+
+    const headers = isHt ? HT_HEADERS : HEADERS;
+    const filePath = isHt ? HT_FILE_PATH : FILE_PATH;
+    const row = isHt
+      ? [timestamp, body.source, body.name, body.phone, body.email, body.pageUrl, telecrmStatus]
+      : [timestamp, body.source, body.name, body.phone, body.concern, body.pageUrl, telecrmStatus];
 
     try {
-      appendLocalRow(row);
+      appendLocalRow(row, filePath, headers);
     } catch (csvErr) {
       console.warn('Local CSV save skipped:', (csvErr as Error).message);
     }
@@ -281,7 +301,11 @@ export async function POST(req: NextRequest) {
     let excelStatus = getSheetWebhookUrl() ? 'failed' : 'not_configured';
     let excelError = '';
     try {
-      const sheetResult = await pushToSheet(body, timestamp, telecrmStatus);
+      const sheetResult = await pushToSheet(body, timestamp, telecrmStatus, {
+        sheetTab: isHt ? HT_SHEET_TAB : undefined,
+        headers,
+        row,
+      });
       if (sheetResult !== null) excelStatus = 'synced';
     } catch (gasErr) {
       excelError = (gasErr as Error).message;
