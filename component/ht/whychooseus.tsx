@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useBookingModal } from "@/component/booking-modal-context";
+import Reveal from "../reveal";
+import { scrollToHtForm } from "./nav-scroll";
 
 const reasons = [
-  { title: "[X+] Successful Patients", bg: "/why-choose-1.jpg" },
-  { title: "Doctor-Led Hair Restoration", bg: "/dr-nishant-profile.webp" },
-  { title: "Personalised Treatment Planning", bg: "/why-choose-2.jpg" },
-  { title: "Advanced Hair Transplant Techniques", bg: "/why-choose-3.jpg" },
-  { title: "Natural Hairline Design", bg: "/why-choose-4.png" },
-  { title: "Complete Post-Treatment Support", bg: "/why-choose-5.webp" },
+  { title: "[X+] Successful Patients", bg: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955322/why-choose-1.jpg" },
+  { title: "Doctor-Led Hair Restoration", bg: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955314/dr-nishant-profile.webp" },
+  { title: "Personalised Treatment Planning", bg: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955322/why-choose-2.jpg" },
+  { title: "Advanced Hair Transplant Techniques", bg: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955322/why-choose-3.jpg" },
+  { title: "Natural Hairline Design", bg: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955329/why-choose-4.png" },
+  { title: "Complete Post-Treatment Support", bg: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955323/why-choose-5.webp" },
 ];
 
 const duplicated = [...reasons, ...reasons];
@@ -22,7 +23,6 @@ function ArrowIcon() {
   );
 }
 export default function WhyChooseUs() {
-  const { open } = useBookingModal();
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 640);
@@ -34,14 +34,16 @@ export default function WhyChooseUs() {
   return (
     <section id="why-choose-us"
       style={{
-        padding: isMobile ? "36px 0" : "56px 0",
+        padding: isMobile ? "36px 0" : "36px 0",
         background: "#fff",
         overflow: "hidden",
         fontFamily: "var(--font-ui-sans)",
       }}
     >
       <div style={{ textAlign: "center", marginBottom: isMobile ? "26px" : "40px", padding: "0 16px" }}>
-        <p
+        <Reveal
+          as="p"
+          direction="down"
           style={{
             fontSize: isMobile ? "11px" : "13px",
             letterSpacing: isMobile ? "1.4px" : "2px",
@@ -53,8 +55,10 @@ export default function WhyChooseUs() {
           }}
         >
           WHY CHOOSE OMORRFIYA?
-        </p>
-        <div
+        </Reveal>
+        <Reveal
+          direction="up"
+          delay={80}
           style={{
             width: "48px",
             height: "3px",
@@ -63,22 +67,12 @@ export default function WhyChooseUs() {
             margin: "0 auto 12px",
           }}
         />
-        <h2
-          style={{
-            fontSize: "clamp(1.25rem, 3.5vw, 4rem)",
-            fontWeight: 900,
-            color: "var(--brand-dark)",
-            margin: 0,
-            fontFamily: "var(--font-ui-serif)",
-            letterSpacing: "-0.02em",
-            lineHeight: 1.12,
-          }}
-        >
+        <Reveal as="h2" direction="up" delay={140} className="mt-4 font-serif text-[clamp(2rem,3.2vw,3.2rem)] font-normal leading-[1.08] tracking-[-.02em] text-[#292d22]">
           Why Patients Choose <span style={{ color: "var(--brand-gold)" }}>Omorrfiya</span>
-        </h2>
+        </Reveal>
       </div>
 
-      <div style={{ position: "relative", width: "100%" }}>
+      <Reveal direction="up" delay={120} style={{ position: "relative", width: "100%" }}>
         <div
           style={{
             position: "absolute",
@@ -118,22 +112,24 @@ export default function WhyChooseUs() {
             <ReasonCard key={`${item.title}-${idx}`} item={item} isMobile={isMobile} />
           ))}
         </div>
-      </div>
+      </Reveal>
 
       <div style={{ textAlign: "center", marginTop: "32px", padding: "0 16px" }}>
-                
+        <Reveal direction="up" delay={80}>
           <button
             type="button"
-            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-[#292d22] px-5 py-3.5 text-[.75rem] font-bold uppercase tracking-[.08em] text-white transition-transform hover:-translate-y-0.5 hover:text-[#292d22]"
+            onClick={scrollToHtForm}
+            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-[#d5ad58] px-5 py-3.5 text-[.75rem] font-bold uppercase tracking-[.08em] text-white transition-transform hover:-translate-y-0.5 hover:text-[#292d22]"
           >
-            <span aria-hidden className="absolute inset-0 scale-x-0 bg-[#d5ad58] transition-transform duration-1000 ease-out group-hover:scale-x-100" />
+            <span aria-hidden className="absolute inset-0 scale-x-0 bg-white transition-transform duration-1000 ease-out group-hover:scale-x-100" />
             <span className="relative inline-flex items-center gap-2">
-               <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#292d22] text-white">
-                  <ArrowIcon />
-                </span>
               Book Your Consultation
+              <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#292d22] text-white">
+                <ArrowIcon />
+              </span>
             </span>
           </button>
+        </Reveal>
       </div>
 
       <style>{`

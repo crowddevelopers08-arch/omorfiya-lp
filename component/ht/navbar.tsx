@@ -3,8 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { useBookingModal } from "@/component/booking-modal-context";
-import { HT_NAV_LINKS, handleHtNavClick } from "./nav-scroll";
+import { HT_NAV_LINKS, handleHtNavClick, scrollToHtForm } from "./nav-scroll";
 
 function PhoneIcon() {
   return (
@@ -40,14 +39,13 @@ const PHONE_HREF = "tel:+919876543210";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { open: openBookingModal } = useBookingModal();
 
   return (
     <header className="sticky top-0 z-50 bg-white font-sans">
       <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-6 px-5 py-4 sm:px-8 lg:px-14 xl:px-20">
         {/* left: logo */}
         <Link href="/" className="relative h-12 w-[130px] shrink-0 sm:h-14 sm:w-[150px]">
-          <Image src="/omorfiyslogo.webp" alt="Omorrfiya" fill sizes="150px" className="object-contain object-left" priority />
+          <Image src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955320/omorfiyslogo.webp" alt="Omorrfiya" fill sizes="150px" className="object-contain object-left" priority />
         </Link>
 
         {/* center: nav links */}
@@ -77,7 +75,7 @@ export default function Navbar() {
 
           <button
             type="button"
-            onClick={openBookingModal}
+            onClick={scrollToHtForm}
             className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-[#d5ad58] px-5 py-3.5 text-[.75rem] font-bold uppercase tracking-[.08em] text-[#292d22] transition-transform hover:-translate-y-0.5"
           >
             <span aria-hidden className="absolute inset-0 scale-x-0 bg-white transition-transform duration-1000 ease-out group-hover:scale-x-100" />
@@ -134,12 +132,12 @@ export default function Navbar() {
             type="button"
             onClick={() => {
               setMenuOpen(false);
-              openBookingModal();
+              scrollToHtForm();
             }}
             className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#d5ad58] px-5 py-3 text-[.75rem] font-bold uppercase tracking-[.08em] text-[#292d22] transition hover:bg-[#f3dda1]"
           >
             <BookIcon />
-            Book Online
+            Book Appointment
           </button>
         </div>
       )}

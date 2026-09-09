@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import Reveal from "@/component/reveal";
-import { useBookingModal } from "@/component/booking-modal-context";
+import { scrollToHtForm } from "./nav-scroll";
 
 function ArrowIcon() {
   return (
@@ -23,7 +23,6 @@ function PlayIcon() {
 
 export default function MedicalifeAbout() {
   const [videoOpen, setVideoOpen] = useState(false);
-  const { open: openBookingModal } = useBookingModal();
 
   return (
     <section id="doctor" className="scroll-mt-24 bg-[#fbf9f4] px-4 py-8 font-sans text-[#292d22] sm:px-8 lg:px-16 lg:py-10">
@@ -36,7 +35,7 @@ export default function MedicalifeAbout() {
           {/* top-right image: doctors walking */}
           <div className="absolute right-0 top-0 h-[420px] w-[290px] overflow-hidden rounded-[160px_160px_120px_120px]">
             <Image
-              src="/dr-nishant-profile.webp"
+              src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955314/dr-nishant-profile.webp"
               alt="Two doctors walking and reviewing notes in a hospital hallway"
               fill
               sizes="290px"
@@ -47,7 +46,7 @@ export default function MedicalifeAbout() {
           {/* bottom-left image: doctor writing */}
           <div className="absolute bottom-0 -left-10 h-[380px] w-[290px] overflow-hidden rounded-[140px_140px_110px_110px]">
             <Image
-              src="/dr-nishant-profile.webp"
+              src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955314/dr-nishant-profile.webp"
               alt="Doctor with a stethoscope writing notes at a desk"
               fill
               sizes="290px"
@@ -63,7 +62,7 @@ export default function MedicalifeAbout() {
             className="group absolute bottom-0 right-0 h-[190px] w-[290px] overflow-hidden rounded-[60px]"
           >
             <Image
-              src="/omorrfiya-reception.webp"
+              src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955321/omorrfiya-reception.webp"
               alt="Doctors talking, watch video preview"
               fill
               sizes="290px"
@@ -91,13 +90,13 @@ export default function MedicalifeAbout() {
         {/* Left — mobile fallback (simple stacked images) */}
         <Reveal direction="up" className="grid grid-cols-2 gap-4 lg:hidden">
           <div className="relative col-span-2 aspect-[4/3] max-sm:aspect-[4/4] overflow-hidden rounded-[36px]">
-            <Image src="/dr-nishant-profile.webp" alt="Two doctors walking and reviewing notes in a hospital hallway" fill sizes="100vw" className="object-cover" />
+            <Image src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955314/dr-nishant-profile.webp" alt="Two doctors walking and reviewing notes in a hospital hallway" fill sizes="100vw" className="object-cover" />
           </div>
           <div className="relative aspect-square overflow-hidden rounded-[28px]">
-            <Image src="/dr-nishant-profile.webp" alt="Doctor with a stethoscope writing notes at a desk" fill sizes="50vw" className="object-cover" />
+            <Image src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955314/dr-nishant-profile.webp" alt="Doctor with a stethoscope writing notes at a desk" fill sizes="50vw" className="object-cover" />
           </div>
           <button type="button" onClick={() => setVideoOpen(true)} aria-label="Watch video" className="group relative aspect-square overflow-hidden rounded-[28px]">
-            <Image src="/omorrfiya-reception.webp" alt="Doctors talking, watch video preview" fill sizes="50vw" className="object-cover" />
+            <Image src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955321/omorrfiya-reception.webp" alt="Doctors talking, watch video preview" fill sizes="50vw" className="object-cover" />
           </button>
         </Reveal>
 
@@ -113,7 +112,7 @@ export default function MedicalifeAbout() {
           <Reveal direction="up" delay={440} className="mt-9">
             <button
               type="button"
-              onClick={openBookingModal}
+              onClick={scrollToHtForm}
               className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-[#d5ad58] px-6 py-3 font-sans text-xs font-bold uppercase tracking-[.08em] text-[#292d22] transition-transform hover:-translate-y-0.5"
             >
               <span aria-hidden className="absolute inset-0 scale-x-0 bg-white transition-transform duration-1000 ease-out group-hover:scale-x-100" />
@@ -151,7 +150,7 @@ export default function MedicalifeAbout() {
           <Reveal direction="up" delay={440} className="mt-9">
             <button
               type="button"
-              onClick={openBookingModal}
+              onClick={scrollToHtForm}
               className="group relative inline-flex w-fit items-center gap-3 overflow-hidden rounded-full bg-[#d5ad58] px-6 py-3 font-sans text-xs font-bold uppercase tracking-[.08em] text-[#292d22] transition-transform hover:-translate-y-0.5 sm:text-[.8rem]"
             >
               <span aria-hidden className="absolute inset-0 scale-x-0 bg-white transition-transform duration-1000 ease-out group-hover:scale-x-100" />

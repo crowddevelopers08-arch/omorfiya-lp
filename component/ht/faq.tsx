@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import Reveal from "@/component/reveal";
-import { useBookingModal } from "@/component/booking-modal-context";
+import { scrollToHtForm } from "./nav-scroll";
 
 function ToggleIcon({ open }: { open: boolean }) {
   return (
@@ -79,7 +79,6 @@ const faqs = [
 export default function PopularQuestionsSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [showAll, setShowAll] = useState(false);
-  const { open: openBookingModal } = useBookingModal();
   const visibleFaqs = showAll ? faqs : faqs.slice(0, VISIBLE_COUNT);
 
   return (
@@ -100,7 +99,7 @@ export default function PopularQuestionsSection() {
         {/* image — shared by both layouts; sits left on desktop, in the middle of the mobile stack */}
         <Reveal direction="left" className="relative aspect-[4/3] w-full overflow-hidden rounded-[24px] sm:aspect-[16/10] lg:aspect-[4/3]">
           <Image
-            src="/omorrfiya-reception.webp"
+            src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955321/omorrfiya-reception.webp"
             alt="Omorrfiya clinic reception with gold-accented branding and marble interiors"
             fill
             sizes="(max-width: 1024px) 100vw, 700px"
@@ -160,7 +159,7 @@ export default function PopularQuestionsSection() {
 
             <button
               type="button"
-              onClick={openBookingModal}
+              onClick={scrollToHtForm}
               className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-[#d5ad58] px-6 py-4 font-sans text-xs font-bold uppercase tracking-[.08em] text-[#292d22] transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f3dda1]"
             >
               <span aria-hidden className="absolute inset-0 scale-x-0 bg-white transition-transform duration-1000 ease-out group-hover:scale-x-100" />
@@ -230,7 +229,7 @@ export default function PopularQuestionsSection() {
 
             <button
               type="button"
-              onClick={openBookingModal}
+              onClick={scrollToHtForm}
               className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-[#d5ad58] px-6 py-3 font-sans text-xs font-bold uppercase tracking-[.08em] text-[#292d22] transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f3dda1] sm:text-[.8rem]"
             >
               <span aria-hidden className="absolute inset-0 scale-x-0 bg-white transition-transform duration-1000 ease-out group-hover:scale-x-100" />

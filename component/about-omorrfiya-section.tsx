@@ -36,7 +36,7 @@ export default function MedicalifeAbout() {
           {/* top-right image: doctors walking */}
           <div className="absolute right-0 top-0 h-[420px] w-[290px] overflow-hidden rounded-[160px_160px_120px_120px]">
             <Image
-              src="/dr-nishant-profile.webp"
+              src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955314/dr-nishant-profile.webp"
               alt="Two doctors walking and reviewing notes in a hospital hallway"
               fill
               sizes="290px"
@@ -47,7 +47,7 @@ export default function MedicalifeAbout() {
           {/* bottom-left image: doctor writing */}
           <div className="absolute bottom-0 -left-10 h-[380px] w-[290px] overflow-hidden rounded-[140px_140px_110px_110px]">
             <Image
-              src="/dr-nishant-profile.webp"
+              src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955314/dr-nishant-profile.webp"
               alt="Doctor with a stethoscope writing notes at a desk"
               fill
               sizes="290px"
@@ -63,7 +63,7 @@ export default function MedicalifeAbout() {
             className="group absolute bottom-0 right-0 h-[190px] w-[290px] overflow-hidden rounded-[60px]"
           >
             <Image
-              src="/omorrfiya-reception.webp"
+              src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955321/omorrfiya-reception.webp"
               alt="Doctors talking, watch video preview"
               fill
               sizes="290px"
@@ -91,13 +91,13 @@ export default function MedicalifeAbout() {
         {/* Left — mobile fallback (simple stacked images) */}
         <Reveal direction="up" className="grid grid-cols-2 gap-4 lg:hidden">
           <div className="relative col-span-2 aspect-[4/3] max-sm:aspect-[4/4] overflow-hidden rounded-[36px]">
-            <Image src="/dr-nishant-profile.webp" alt="Two doctors walking and reviewing notes in a hospital hallway" fill sizes="100vw" className="object-cover" />
+            <Image src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955314/dr-nishant-profile.webp" alt="Two doctors walking and reviewing notes in a hospital hallway" fill sizes="100vw" className="object-cover" />
           </div>
           <div className="relative aspect-square overflow-hidden rounded-[28px]">
-            <Image src="/dr-nishant-profile.webp" alt="Doctor with a stethoscope writing notes at a desk" fill sizes="50vw" className="object-cover" />
+            <Image src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955314/dr-nishant-profile.webp" alt="Doctor with a stethoscope writing notes at a desk" fill sizes="50vw" className="object-cover" />
           </div>
           <button type="button" onClick={() => setVideoOpen(true)} aria-label="Watch video" className="group relative aspect-square overflow-hidden rounded-[28px]">
-            <Image src="/omorrfiya-reception.webp" alt="Doctors talking, watch video preview" fill sizes="50vw" className="object-cover" />
+            <Image src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955321/omorrfiya-reception.webp" alt="Doctors talking, watch video preview" fill sizes="50vw" className="object-cover" />
           </button>
         </Reveal>
 

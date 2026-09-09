@@ -13,11 +13,11 @@ const trustSignals = [
 ]
 
 const treatments = [
-  { name: "Liposuction", image: "/banner-1.png", mobileImage: "/banner-mbl-1.png" },
-  { name: "Tummy Tuck", image: "/banner-2.png", mobileImage: "/banner-mbl-2.png" },
-  { name: "Gynecomastia", image: "/banner-3.png", mobileImage: "/banner-mbl-3.png" },
-  { name: "Body Sculpting", image: "/banner-4.png", mobileImage: "/banner-mbl-4.png" },
-  { name: "Hair Transplant", image: "/banner-5.png", mobileImage: "/banner-mbl-5.png" },
+  { name: "Liposuction", image: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955311/banner-1.png", mobileImage: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955311/banner-mbl-1.png" },
+  { name: "Tummy Tuck", image: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955311/banner-2.png", mobileImage: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955317/banner-mbl-2.png" },
+  { name: "Gynecomastia", image: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955312/banner-3.png", mobileImage: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955317/banner-mbl-3.png" },
+  { name: "Body Sculpting", image: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955317/banner-4.png", mobileImage: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955317/banner-mbl-4.png" },
+  { name: "Hair Transplant", image: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955311/banner-5.png", mobileImage: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955318/banner-mbl-5.png" },
 ]
 
 export default function HeroSection() {

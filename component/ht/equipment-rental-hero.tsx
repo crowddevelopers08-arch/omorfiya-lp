@@ -56,24 +56,24 @@ export default function EquipmentRentalHero() {
   return (
     <section id="home" className={styles.hero} aria-labelledby="equipment-heading">
       <div className={styles.backdrop} aria-hidden="true">
-        {["/herobanner-1.png", "/herobanner-2.webp", "/herobanner-3.png", "/herobanner-4.png"].map((src) => (
+        {["https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955325/herobanner-1.png", "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955319/herobanner-2.webp", "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955325/herobanner-3.png", "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955325/herobanner-4.png"].map((src) => (
           <div key={src} className={styles.backgroundSlide} style={{ backgroundImage: `url("${src}")` }} />
         ))}
       </div>
       <div className={styles.copy}>
-        <p className={styles.eyebrow}>Personalised Solutions for Progressive Hair Loss.</p>
-        <div className={styles.headlineWrap}>
+        <p className={`${styles.eyebrow} ${styles.inLeft}`}>Personalised Solutions for Progressive Hair Loss.</p>
+        <div className={`${styles.headlineWrap} ${styles.inRight}`}>
           <h1 id="equipment-heading" className={styles.headline}>
             <span>Experience doctor-led </span>
             <span><strong>hair transplant solutions tailored to</strong> </span>
             <span> your hair loss pattern, donor area and </span>
             <span>restoration goals.</span>
           </h1>
-          <span className={`${styles.badge} ${styles.topBadge}`}>15k+ Reviews</span>
-          <span className={`${styles.badge} ${styles.deliveryBadge}`}>Nationwide Delivery</span>
-          <span className={`${styles.badge} ${styles.reviewBadge}`}>15k+ Reviews</span>
+          <span className={`${styles.badge} ${styles.topBadge} ${styles.badgeInRight}`}>15k+ Reviews</span>
+          <span className={`${styles.badge} ${styles.deliveryBadge} ${styles.badgeInLeft}`}>Nationwide Delivery</span>
+          <span className={`${styles.badge} ${styles.reviewBadge} ${styles.badgeInUp}`}>15k+ Reviews</span>
         </div>
-        <div className={styles.trustSignals} role="region" aria-label="Trust signals" tabIndex={0}>
+        <div className={`${styles.trustSignals} hero-reveal hero-delay-3`} role="region" aria-label="Trust signals" tabIndex={0}>
           <div className={styles.trustTrack}>
             {[0, 1].map((copy) => (
               <ul key={copy} className={styles.trustGroup} aria-hidden={copy === 1 ? true : undefined}>
@@ -94,7 +94,7 @@ export default function EquipmentRentalHero() {
       </div>
       <form
         id="book"
-        className={styles.form}
+        className={`${styles.form} hero-reveal hero-delay-4`}
         aria-labelledby="consultation-title"
         aria-describedby="consultation-description"
         onSubmit={handleSubmit}

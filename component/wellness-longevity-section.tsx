@@ -89,7 +89,7 @@ export default function WellnessLongevitySection() {
       <div className="mt-10 grid min-w-0 items-stretch gap-5 lg:h-[535px] lg:grid-cols-3 lg:gap-4 xl:gap-5">
         <Reveal direction="left" className="relative min-h-[420px] min-w-0 overflow-hidden rounded-[15px] bg-[#eee5d9] lg:h-full lg:min-h-0">
           <Image
-            src="/wellness-longevity-treatment.png"
+            src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955327/wellness-longevity-treatment.png"
             alt="Red light facial treatment in a luxury wellness clinic"
             fill
             sizes="(max-width: 1024px) 100vw, 34vw"

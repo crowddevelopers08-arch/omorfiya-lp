@@ -1,6 +1,13 @@
 "use client";
 
-import { createElement, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  createElement,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 
 type Direction = "left" | "right" | "up" | "down";
 
@@ -10,13 +17,15 @@ export default function Reveal({
   delay = 0,
   as = "div",
   className = "",
+  style,
 }: {
-  children: ReactNode;
+  children?: ReactNode;
   direction?: Direction;
   /** stagger delay in ms, applied once the element is in view */
   delay?: number;
   as?: string;
   className?: string;
+  style?: CSSProperties;
 }) {
   const ref = useRef<HTMLElement | null>(null);
   const [visible, setVisible] = useState(false);
@@ -44,7 +53,7 @@ export default function Reveal({
     {
       ref,
       className: `reveal reveal-${direction} ${visible ? "is-visible" : ""} ${className}`.trim(),
-      style: { "--reveal-delay": `${delay}ms` } as React.CSSProperties,
+      style: { ...style, "--reveal-delay": `${delay}ms` } as CSSProperties,
     },
     children
   );

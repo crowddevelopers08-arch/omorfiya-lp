@@ -11,7 +11,7 @@ export default function FinalCtaOmorrfiya() {
     <section className="relative isolate overflow-hidden bg-[#0d0d0d] py-8 font-sans sm:py-28 lg:py-14">
       {/* background image */}
       <Image
-        src="/omorrfiya-reception.webp"
+        src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955321/omorrfiya-reception.webp"
         alt=""
         fill
         priority={false}

@@ -105,7 +105,7 @@ export default function PopularQuestionsSection() {
         {/* image — shared by both layouts; sits left on desktop, in the middle of the mobile stack */}
         <Reveal direction="left" className="relative aspect-[4/3] w-full overflow-hidden rounded-[24px] sm:aspect-[16/10] lg:aspect-[4/3]">
           <Image
-            src="/omorrfiya-reception.webp"
+            src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955321/omorrfiya-reception.webp"
             alt="Omorrfiya clinic reception with gold-accented branding and marble interiors"
             fill
             sizes="(max-width: 1024px) 100vw, 700px"

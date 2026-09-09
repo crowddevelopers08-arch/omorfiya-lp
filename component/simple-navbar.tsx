@@ -15,7 +15,7 @@ export default function SimpleNavbar() {
       <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-5 py-4 sm:px-8 lg:px-14 xl:px-20">
         {/* left: logo */}
         <Link href="/" className="relative h-11 w-[120px] shrink-0 sm:h-14 sm:w-[150px]">
-          <Image src="/omorfiyslogo.webp" alt="Omorrfiya" fill sizes="150px" className="object-contain object-left" priority />
+          <Image src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955320/omorfiyslogo.webp" alt="Omorrfiya" fill sizes="150px" className="object-contain object-left" priority />
         </Link>
 
         {/* right: back to home */}

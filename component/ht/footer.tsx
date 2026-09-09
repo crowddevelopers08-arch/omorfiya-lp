@@ -97,7 +97,7 @@ export default function DenartFooter() {
             <div className="rounded-2xl sm:p-8">
               <div className="flex items-center gap-3">
                 <div className="relative h-12 w-12 shrink-0">
-                  <Image src="/omorfiyslogo.webp" alt="Omorrfiya" fill sizes="48px" className="object-contain" />
+                  <Image src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955320/omorfiyslogo.webp" alt="Omorrfiya" fill sizes="48px" className="object-contain" />
                 </div>
                 <div>
                   <p className="font-serif text-[1.3rem] leading-none text-[#292d22]">Omorrfiya</p>

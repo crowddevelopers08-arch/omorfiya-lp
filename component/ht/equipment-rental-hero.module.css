@@ -12,6 +12,51 @@
   font-family: var(--font-ui-sans);
 }
 
+/* slower, more gradual entrance just for this hero */
+.hero :global(.hero-reveal) { animation-duration: 1.4s; }
+.hero :global(.hero-delay-3) { animation-delay: .9s; }
+.hero :global(.hero-delay-4) { animation-delay: 1.15s; }
+
+/* directional entrances — label slides in from the left, heading from the right */
+.inLeft { animation: heroInLeft 1.3s cubic-bezier(.2, .8, .2, 1) both; }
+.inRight { animation: heroInRight 1.3s cubic-bezier(.2, .8, .2, 1) both; animation-delay: .3s; }
+
+@keyframes heroInLeft {
+  from { opacity: 0; transform: translateX(-46px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes heroInRight {
+  from { opacity: 0; transform: translateX(46px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* the three floating badges arrive one by one: right, then left, then up */
+.badgeInRight { animation: badgeInRight 1s cubic-bezier(.2, .8, .2, 1) both; animation-delay: .7s; }
+.badgeInLeft { animation: badgeInLeft 1s cubic-bezier(.2, .8, .2, 1) both; animation-delay: 1s; }
+.badgeInUp { animation: badgeInUp 1s cubic-bezier(.2, .8, .2, 1) both; animation-delay: 1.3s; }
+
+@keyframes badgeInRight {
+  from { opacity: 0; transform: translateX(34px) rotate(15deg); }
+  to { opacity: 1; transform: translateX(0) rotate(15deg); }
+}
+@keyframes badgeInLeft {
+  from { opacity: 0; transform: translateX(-34px) rotate(12deg); }
+  to { opacity: 1; transform: translateX(0) rotate(12deg); }
+}
+@keyframes badgeInUp {
+  from { opacity: 0; transform: translateY(26px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero :global(.hero-reveal),
+  .inLeft,
+  .inRight,
+  .badgeInRight,
+  .badgeInLeft,
+  .badgeInUp { animation: none; }
+}
+
 .backdrop {
   position: absolute;
   z-index: -1;

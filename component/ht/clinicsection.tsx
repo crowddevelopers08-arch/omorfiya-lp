@@ -2,11 +2,9 @@
 
 import Image from "next/image";
 import Reveal from "@/component/reveal";
-import { useBookingModal } from "@/component/booking-modal-context";
+import { scrollToHtForm } from "./nav-scroll";
 
 export default function WhoWeAreSection() {
-  const { open: openBookingModal } = useBookingModal();
-
   return (
     <section className="relative scroll-mt-24 overflow-hidden bg-[#292d22] px-4 py-8 font-sans sm:px-8 lg:px-16">
       {/* decorative blurred blob, right edge */}
@@ -28,7 +26,7 @@ export default function WhoWeAreSection() {
         {/* image — shared by both layouts; sits right on desktop, in the middle of the mobile stack */}
         <Reveal direction="right" className="relative aspect-[4/3] w-full overflow-hidden rounded-[6px] sm:aspect-[16/10] lg:order-2 lg:aspect-[4/3]">
           <Image
-            src="/omorrfiya-reception.webp"
+            src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955321/omorrfiya-reception.webp"
             alt="Omorrfiya clinic reception with gold-accented branding and marble interiors"
             fill
             sizes="(max-width: 1024px) 100vw, 700px"
@@ -53,7 +51,7 @@ export default function WhoWeAreSection() {
           <Reveal direction="up" delay={320} className="mt-8">
             <button
               type="button"
-              onClick={openBookingModal}
+              onClick={scrollToHtForm}
               className="group relative flex min-h-[52px] w-full items-center justify-center overflow-hidden rounded-full bg-[#d5ad58] px-7 py-3.5 font-sans text-xs font-bold uppercase tracking-[.08em] text-[#292d22] transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f3dda1]"
             >
               <span aria-hidden className="absolute inset-0 scale-x-0 bg-white transition-transform duration-1000 ease-out group-hover:scale-x-100" />
@@ -88,7 +86,7 @@ export default function WhoWeAreSection() {
           <Reveal direction="up" delay={320} className="mt-8">
             <button
               type="button"
-              onClick={openBookingModal}
+              onClick={scrollToHtForm}
               className="group relative inline-flex min-h-[52px] items-center justify-center overflow-hidden rounded-full bg-[#d5ad58] px-7 py-3.5 font-sans text-xs font-bold uppercase tracking-[.08em] text-[#292d22] transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f3dda1] sm:text-[.8rem]"
             >
               <span aria-hidden className="absolute inset-0 scale-x-0 bg-white transition-transform duration-1000 ease-out group-hover:scale-x-100" />
