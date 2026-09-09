@@ -6,9 +6,9 @@ export const metadata: Metadata = {
   title: "Omorfiya | Body Contouring & Hair Restoration",
   description: "Doctor-led body contouring and hair restoration treatments with personalised care.",
   icons: {
-    icon: "/omorfiyslogo.webp",
-    shortcut: "/omorfiyslogo.webp",
-    apple: "/omorfiyslogo.webp",
+    icon: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955320/omorfiyslogo.webp",
+    shortcut: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955320/omorfiyslogo.webp",
+    apple: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955320/omorfiyslogo.webp",
   },
 };
 
