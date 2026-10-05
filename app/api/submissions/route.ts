@@ -28,6 +28,22 @@ const HT_HEADERS = [
   'TeleCRM',
 ];
 
+// Review page (/review) feedback lands in its own CSV + Google Sheet tab
+// ("Review Leads"), with Rating / Callback / Message columns.
+const REVIEW_SHEET_TAB = 'Review Leads';
+const REVIEW_FILE_PATH = path.join(DATA_DIR, 'review-leads.csv');
+const REVIEW_HEADERS = [
+  'Timestamp',
+  'Source',
+  'Name',
+  'Phone',
+  'Rating',
+  'Callback',
+  'Message',
+  'URL',
+  'TeleCRM',
+];
+
 export const runtime = 'nodejs';
 
 type SubmissionBody = {
@@ -184,6 +200,8 @@ async function pushToTeleCRM(body: SubmissionBody): Promise<TelecrmResponse | nu
     `Name: ${body.name || 'Not specified'}`,
     `Phone: ${body.phone || 'Not specified'}`,
     `Concern: ${body.concern || 'Not specified'}`,
+    ...(body.rating ? [`Rating: ${body.rating}/5`] : []),
+    ...(body.callback ? [`Callback: ${body.callback}`] : []),
     `URL: ${body.pageUrl || 'Not specified'}`,
   ].join(' | ');
 
@@ -269,8 +287,10 @@ export async function POST(req: NextRequest) {
     const rawBody = await req.json();
     const body = normalizeSubmission(rawBody);
 
-    // Hair-transplant landing page leads go to their own tab / CSV.
+    // Hair-transplant landing page leads and review page feedback each go to
+    // their own tab / CSV.
     const isHt = body.sheetTab === HT_SHEET_TAB;
+    const isReview = !isHt && (body.sheetTab === REVIEW_SHEET_TAB || body.source === REVIEW_SOURCE);
 
     if (!body.name || !body.phone || (!isHt && !body.concern)) {
       return NextResponse.json(
@@ -286,11 +306,13 @@ export async function POST(req: NextRequest) {
     const telecrmResult = await pushToTeleCRM(body);
     const telecrmStatus = getTelecrmStatus(telecrmResult);
 
-    const headers = isHt ? HT_HEADERS : HEADERS;
-    const filePath = isHt ? HT_FILE_PATH : FILE_PATH;
+    const headers = isHt ? HT_HEADERS : isReview ? REVIEW_HEADERS : HEADERS;
+    const filePath = isHt ? HT_FILE_PATH : isReview ? REVIEW_FILE_PATH : FILE_PATH;
     const row = isHt
       ? [timestamp, body.source, body.name, body.phone, body.email, body.pageUrl, telecrmStatus]
-      : [timestamp, body.source, body.name, body.phone, body.concern, body.pageUrl, telecrmStatus];
+      : isReview
+        ? [timestamp, body.source, body.name, body.phone, body.rating ? `${body.rating}/5` : '', body.callback, body.concern, body.pageUrl, telecrmStatus]
+        : [timestamp, body.source, body.name, body.phone, body.concern, body.pageUrl, telecrmStatus];
 
     try {
       appendLocalRow(row, filePath, headers);
@@ -302,7 +324,7 @@ export async function POST(req: NextRequest) {
     let excelError = '';
     try {
       const sheetResult = await pushToSheet(body, timestamp, telecrmStatus, {
-        sheetTab: isHt ? HT_SHEET_TAB : undefined,
+        sheetTab: isHt ? HT_SHEET_TAB : isReview ? REVIEW_SHEET_TAB : undefined,
         headers,
         row,
       });

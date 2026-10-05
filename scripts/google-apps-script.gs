@@ -12,6 +12,7 @@
  * `sheet` is optional and names the tab to write to:
  *   - omitted            → main "Leads" tab   (['Timestamp','Source','Name','Phone','Concern','URL','TeleCRM'])
  *   - "ht-leads"         → hair-transplant tab (['Timestamp','Source','Name','Phone','Email','URL','TeleCRM'])
+ *   - "Review Leads"     → review page tab     (['Timestamp','Source','Name','Phone','Rating','Callback','Message','URL','TeleCRM'])
  * Each tab gets its header row written automatically the first time it is used.
  *
  * ── Deploy ──────────────────────────────────────────────────────────────
@@ -39,6 +40,8 @@ const SHEET_NAME = "Leads";
 // Fallback header rows per tab, used only if the payload omits `headers`.
 const DEFAULT_HEADERS = ["Timestamp", "Source", "Name", "Phone", "Concern", "URL", "TeleCRM"];
 const HT_HEADERS = ["Timestamp", "Source", "Name", "Phone", "Email", "URL", "TeleCRM"];
+const REVIEW_TAB = "Review Leads";
+const REVIEW_HEADERS = ["Timestamp", "Source", "Name", "Phone", "Rating", "Callback", "Message", "URL", "TeleCRM"];
 
 function doPost(e) {
   try {
@@ -48,7 +51,8 @@ function doPost(e) {
 
     // Write the header row once, the first time the tab is used.
     if (sheet.getLastRow() === 0) {
-      const fallbackHeaders = tabName === "ht-leads" ? HT_HEADERS : DEFAULT_HEADERS;
+      const fallbackHeaders =
+        tabName === "ht-leads" ? HT_HEADERS : tabName === REVIEW_TAB ? REVIEW_HEADERS : DEFAULT_HEADERS;
       sheet.appendRow(data.headers && data.headers.length ? data.headers : fallbackHeaders);
     }
 
@@ -64,6 +68,18 @@ function doPost(e) {
         data.name || "",
         data.phone || "",
         data.email || "",
+        data.pageUrl || data.url || "",
+        data.telecrm || "",
+      ];
+    } else if (tabName === REVIEW_TAB) {
+      row = [
+        data.timestamp || new Date(),
+        data.source || "",
+        data.name || "",
+        data.phone || "",
+        data.rating ? data.rating + "/5" : "",
+        data.callback || "",
+        data.concern || "",
         data.pageUrl || data.url || "",
         data.telecrm || "",
       ];
