@@ -25,7 +25,7 @@ const LOGO_SRC =
 // Google Business review link. Replace with Omorfiya's own
 // https://g.page/r/<id>/review link from Google Business Profile.
 const GOOGLE_REVIEW_URL =
-  'https://g.page/r/CZEAl2ixXepSEAE/review';
+  'https://g.page/r/CawxyFqyD8ucEAE/review';
 
 function wordCount(str: string) {
   return str.trim().split(/\s+/).filter(Boolean).length;
