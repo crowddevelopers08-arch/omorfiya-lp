@@ -55,11 +55,6 @@ const faqs = [
       "Options include Liposuction, Tummy Tuck, Body Sculpting, Skin Tightening, Arm Contouring and Gynecomastia treatment.",
   },
   {
-    question: "Does Omorrfiya offer surgical and non-surgical body contouring?",
-    answer:
-      "Yes. Both surgical and non-surgical body contouring options are available depending on your concern and treatment suitability.",
-  },
-  {
     question: "What type of hair transplant is available?",
     answer:
       "Omorrfiya offers customised FUE Hair Transplant with personalised hairline planning based on facial features, hair-loss pattern and donor-area assessment.",

@@ -91,11 +91,11 @@ html, body { overflow-x: hidden; max-width: 100%; }
   animation: process-step-pulse 8s ease-in-out infinite;
 }
 
-.hero-image-zoom { animation: hero-image-zoom 5.5s cubic-bezier(.25,.1,.25,1) both; }
+.hero-image-zoom { animation: hero-image-zoom 5s ease-in-out infinite; }
 
 @keyframes hero-image-zoom {
-  from { transform: scale(1.08); }
-  to { transform: scale(1); }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
 }
 
 @keyframes process-step-pulse {

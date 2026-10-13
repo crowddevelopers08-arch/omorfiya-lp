@@ -1,0 +1,12 @@
+.wave {
+  animation: wave-drift 12s linear infinite;
+}
+
+@keyframes wave-drift {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave { animation: none; }
+}

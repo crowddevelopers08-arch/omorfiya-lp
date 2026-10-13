@@ -18,7 +18,7 @@ export default function Home() {
         <WhyChooseSection />
         <WellnessLongevitySection />
         <TreatmentProcess />
-        <AboutOmorrfiyaSection />
+        {/* <AboutOmorrfiyaSection /> */}
         <WhoWeAreSection />
         <PopularQuestionsSection />
         <FinalCtaOmorrfiya />

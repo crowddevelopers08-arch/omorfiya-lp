@@ -1,159 +1,169 @@
-import Image from "next/image"
-import Reveal from "@/component/reveal"
+"use client";
 
-const services = [
-  {
-    title: "Suitable for:",
-    description: "Abdomen • Waist • Thighs • Arms • Other Selected Areas",
-    icon: (
-      <svg viewBox="0 0 32 32" aria-hidden="true" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M9 6c1.5 5 1.5 15 0 20M23 6c-1.5 5-1.5 15 0 20M9.5 12c4 2 9 2 13 0M9.5 20c4-2 9-2 13 0" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-  {
-    title: "May Help With:",
-    description: "Excess Skin • Loose Abdomen • Muscle Laxity • Post-Weight-Loss Changes",
-    icon: (
-      <svg viewBox="0 0 32 32" aria-hidden="true" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M8 9c5 2 11 2 16 0M8 23c5-2 11-2 16 0M11 7c-2 6-2 12 0 18M21 7c2 6 2 12 0 18" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-  {
-    title: "Treatment Focus:",
-    description: "Chest Contouring • Excess Tissue Reduction • Improved Definition",
-    icon: (
-      <svg viewBox="0 0 32 32" aria-hidden="true" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M7 8c3 0 5 2 6 5l3 8 3-8c1-3 3-5 6-5M8 23c4-1 6-3 8-6 2 3 4 5 8 6" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    ),
-  },
-  {
-    title: "Treatment Focus:",
-    description: "Fat Reduction • Body Shaping • Contouring • Improved Definition",
-    icon: (
-      <svg viewBox="0 0 32 32" aria-hidden="true" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M8 16h16M16 8v16M10.5 10.5l11 11M21.5 10.5l-11 11" strokeLinecap="round" />
-        <circle cx="16" cy="16" r="10" />
-      </svg>
-    ),
-  },
-  {
-    title: "Treatment Focus:",
-    description: "Receding Hairline • Hair Thinning • Bald Areas • Hairline Restoration",
-    icon: (
-      <svg viewBox="0 0 32 32" aria-hidden="true" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M8 24c0-8 2-16 8-16s8 8 8 16M11 17c2-3 3-5 5-8M16 17c1-3 2-5 2-8M21 17c0-3-1-5-3-8" strokeLinecap="round" />
-      </svg>
-    ),
-  },
-]
+import Image from "next/image";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useBookingModal } from "@/component/booking-modal-context";
+import styles from "./TreatmentAreas.module.css";
 
-const treatmentContent = [
-  {
-    title: "Liposuction",
-    description: "Designed to remove localised fat deposits from selected areas and improve overall body contours.",
-  },
-  {
-    title: "Tummy Tuck",
-    description: "Helps to address excess the abdominal skin and weakened abdominal muscles to create a firmer and more defined midsection.",
-  },
-  {
-    title: "Gynecomastia",
-    description: "Designed for men, concerned about excess chest tissue or fat and looking for a flatter, more proportionate chest contour.",
-  },
-  {
-    title: "Body Sculpting",
-    description: "Targets the selected areas of stubborn fat and support improved body definition without surgery.",
-  },
-  {
-    title: "Hair Transplant",
-    description: "Customised FUE Hair Transplant uses precision techniques and personalised hairline planning to restore thinning or lost hair while maintaining a natural appearance.",
-  },
-]
+function ArrowLeft({ className }: { className: string }) {
+  return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m12 5-7 7 7 7M5 12h14" /></svg>;
+}
+function ArrowRight({ className }: { className: string }) {
+  return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m12 5 7 7-7 7M5 12h14" /></svg>;
+}
+function ArrowUpRight({ className }: { className: string }) {
+  return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10" /></svg>;
+}
+
+const treatmentAreas = [
+  { id: "medifacials", name: "Medifacials", alt: "Aesthetician providing a facial skin treatment" },
+  { id: "laser-hair-reduction", name: "Laser Hair Reduction", alt: "Professional laser hair removal treatment" },
+  { id: "radio-frequency", name: "Radio Frequency", alt: "Device-based facial skincare treatment" },
+  { id: "hair-gfc", name: "Hair GFC", alt: "Scalp care and hair assessment" },
+  { id: "botox-fillers", name: "Botox & Fillers", alt: "Cosmetic practitioner administering a forehead injection" },
+  { id: "hydrafacial", name: "Hydrafacial", alt: "Hydrafacial equipment used during a facial treatment" },
+  { id: "laser-toning", name: "Laser Toning", alt: "Specialist providing a laser skin treatment" },
+  { id: "carbon-laser", name: "Carbon Laser", alt: "Aesthetician providing a facial laser treatment" },
+] as const;
 
 export default function WellnessLongevitySection() {
+  const carouselRef = useRef<HTMLUListElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const carouselId = useId();
+  const { open: openBookingModal } = useBookingModal();
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const isPaused = isHovered || isFocused;
+
+  const goToArea = useCallback((index: number) => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+    const targetIndex = (index + treatmentAreas.length) % treatmentAreas.length;
+    const first = carousel.children[0] as HTMLElement;
+    const target = carousel.children[targetIndex] as HTMLElement;
+    carousel.scrollTo({
+      left: target.offsetLeft - first.offsetLeft,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    });
+  }, []);
+
+  useEffect(() => {
+    if (isPaused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const interval = window.setInterval(() => {
+      const carousel = carouselRef.current;
+      if (!carousel) return;
+      const first = carousel.children[0] as HTMLElement;
+      const second = carousel.children[1] as HTMLElement;
+      const spacing = second.offsetLeft - first.offsetLeft;
+      if (spacing <= 0 || carousel.scrollWidth <= carousel.clientWidth) return;
+      const currentIndex = Math.round(carousel.scrollLeft / spacing);
+      const atEnd = carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 2;
+      goToArea(atEnd ? 0 : currentIndex + 1);
+    }, 5000);
+    return () => window.clearInterval(interval);
+  }, [goToArea, isPaused]);
+
   return (
-    <section id="services" className="scroll-mt-24 bg-white px-5 py-6 text-[#26251f] sm:px-7 sm:py-8 lg:px-10 lg:py-14 xl:px-12">
-      <div className="mx-auto max-w-[1680px]">
-        <header className="mx-auto max-w-4xl text-center">
-          <Reveal as="p" direction="down" className="font-sans text-[.62rem] font-bold uppercase tracking-[.28em] text-[#9c762d]">
-            Treatments Section
-          </Reveal>
-          <Reveal as="h2" direction="up" delay={120} className="mt-1.5 font-serif text-[clamp(2.4rem,4vw,3.25rem)] font-normal leading-[1.06] tracking-[-.03em] text-[#292d22]">
-            Treatments Designed Around Your Goals
-          </Reveal>
-        </header>
+    <section id="wellness-longevity" className={`font-sans scroll-mt-20 bg-[#f7f5f1] px-4 py-8 text-[#171717] sm:px-6 sm:py-10 lg:py-12`} aria-labelledby="treatment-areas-heading"
+      onFocusCapture={() => setIsFocused(true)}
+      onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setIsFocused(false); }}
+    >
+      <div className="mx-auto max-w-[1272px]">
+        <div className="mb-6 flex flex-col items-center gap-4 text-center sm:mb-8 lg:gap-10">
+          <div className="flex w-full max-w-[1520px] flex-col items-center justify-center">
+            <p className="mb-3 flex justify-center items-center gap-3 font-sans text-[.68rem] font-bold uppercase tracking-[.3em] text-[#927421]">
+              Treatments Section
+            </p>
+            <h2 id="treatment-areas-heading" className={`font-serif text-[clamp(2.4rem,4vw,4.25rem)] font-normal leading-[1.06] tracking-[-.03em]`}>
+             Treatments Designed Around Your Goals.
+            </h2>
+          </div>
+        </div>
 
-      <div className="mt-10 grid min-w-0 items-stretch gap-5 lg:h-[535px] lg:grid-cols-3 lg:gap-4 xl:gap-5">
-        <Reveal direction="left" className="relative min-h-[420px] min-w-0 overflow-hidden rounded-[15px] bg-[#eee5d9] lg:h-full lg:min-h-0">
-          <Image
-            src="https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955327/wellness-longevity-treatment.png"
-            alt="Red light facial treatment in a luxury wellness clinic"
-            fill
-            sizes="(max-width: 1024px) 100vw, 34vw"
-            className="object-cover object-center"
-          />
-        </Reveal>
-
-        <Reveal direction="up" delay={150} className="grid min-w-0 grid-rows-5 divide-y divide-[#cdbb96]/55">
-          {treatmentContent.map((treatment, index) => (
-            <article key={treatment.title} className="flex min-h-0 flex-col justify-center py-2 first:pt-0 last:pb-0">
-              <div className="flex items-baseline gap-2">
-                <span className="font-sans text-[.54rem] font-semibold tracking-[.18em] text-[#9c762d]">
+        <ul
+          id={carouselId}
+          ref={carouselRef}
+          aria-label="Skin and hair treatments"
+          aria-roledescription="carousel"
+          tabIndex={0}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onScroll={(event) => {
+            const carousel = event.currentTarget;
+            const first = carousel.children[0] as HTMLElement;
+            const second = carousel.children[1] as HTMLElement;
+            const spacing = second.offsetLeft - first.offsetLeft;
+            if (spacing > 0) setActiveIndex(Math.min(treatmentAreas.length - 1, Math.max(0, Math.round(carousel.scrollLeft / spacing))));
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+              event.preventDefault();
+              goToArea(activeIndex + (event.key === "ArrowRight" ? 1 : -1));
+            }
+          }}
+          className="relative flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain rounded-[18px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d5ad58] lg:gap-5"
+        >
+          {treatmentAreas.map((area, index) => (
+            <li key={area.id} className="group min-w-0 shrink-0 basis-full sm:basis-[calc((100%_-_1rem)/2)] lg:basis-[calc((100%_-_3.75rem)/4)] snap-start snap-always overflow-hidden rounded-[18px] border border-[#171717]/8 bg-white transition-shadow duration-300 hover:shadow-lg motion-reduce:transition-none">
+              <div className="relative aspect-[4/5] overflow-hidden bg-[#eae4d8] sm:aspect-[5/4] lg:aspect-[4/5]">
+                <Image
+                  src={`/images/treatments/${area.id}.jpg`}
+                  alt={area.alt}
+                  fill
+                  sizes="(min-width: 1280px) 303px, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-[1.04] motion-reduce:transform-none motion-reduce:transition-none"
+                />
+                <span className="absolute left-3 top-3 flex h-8 w-8 items-center justify-center rounded-full border border-white/60 bg-white/90 font-sans text-[.68rem] font-bold text-[#927421] backdrop-blur-sm sm:left-4 sm:top-4" aria-hidden="true">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <h2 className="font-serif text-[clamp(1.3rem,1.45vw,1.55rem)] font-normal leading-tight tracking-[-.02em]">
-                  {treatment.title}
-                </h2>
+                <div className="pointer-events-none absolute inset-x-0 -bottom-px h-7 overflow-hidden sm:h-8" aria-hidden="true">
+                  <svg className={`${styles.wave} absolute bottom-0 h-full w-[200%] max-w-none`} viewBox="0 0 1200 32" preserveAspectRatio="none" style={{ animationDelay: `${index * -3}s` }}>
+                    <path fill="#d5ad58" fillOpacity="0.45" d="M0 16 Q75 32 150 16 T300 16 T450 16 T600 16 T750 16 T900 16 T1050 16 T1200 16 V32 H0Z" />
+                    <path fill="#d5ad58" d="M0 18 Q75 0 150 18 T300 18 T450 18 T600 18 T750 18 T900 18 T1050 18 T1200 18 V32 H0Z" />
+                  </svg>
+                </div>
               </div>
-              <p className="mt-1 pl-7 font-sans text-[.76rem] leading-[1.4] text-[#806f62] xl:text-[.82rem]">
-                {treatment.description}
-              </p>
-            </article>
-          ))}
-        </Reveal>
-
-        <Reveal direction="right" delay={250} className="hidden lg:grid lg:grid-rows-5 lg:divide-y lg:divide-[#cdbb96]/55">
-          {services.map((service, index) => (
-            <article key={`${service.title}-${index}`} className="grid min-h-0 grid-cols-[42px_1fr] items-center gap-3 py-2 first:pt-0 last:pb-0">
-              <div className="grid size-[42px] place-items-center rounded-full border border-[#cdbb96]/70 text-[#9c762d] [&_svg]:size-[18px]">
-                {service.icon}
-              </div>
-              <div className="pt-0.5">
-                <h3 className="font-sans text-[.75rem] font-medium leading-4 text-black xl:text-[.8rem]">
-                  {service.title}
+              <div className="relative flex min-h-[76px] items-center justify-center bg-[#d5ad58] px-4 py-4 text-center text-[#292d22] sm:px-5">
+                <h3 className="font-serif text-[clamp(1.35rem,1.6vw,1.65rem)] font-normal leading-tight">
+                  <button type="button" onClick={openBookingModal} aria-label={`Book a consultation for ${area.name}`} className="cursor-pointer rounded px-2 py-1 font-serif focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#292d22]">{area.name}</button>
                 </h3>
-                <p className="mt-1 font-sans text-[.74rem] leading-[1.38] text-[#8a786c] xl:text-[.8rem]">
-                  {service.description}
-                </p>
               </div>
-            </article>
+            </li>
           ))}
-        </Reveal>
-
-        {/* mobile / tablet — single scrollable row */}
-        <Reveal direction="right" delay={250} className="min-w-0 lg:hidden">
-          <div className="scrollbar-none -mx-5 flex gap-3 overflow-x-auto px-5">
-            {services.map((service, index) => (
-              <div
-                key={`${service.title}-mobile-${index}`}
-                className="flex w-[200px] shrink-0 flex-col gap-3 rounded-2xl border border-[#cdbb96]/50 bg-[#fbf9f4] p-4"
-              >
-                <div className="grid size-10 shrink-0 place-items-center rounded-full border border-[#cdbb96]/70 text-[#9c762d] [&_svg]:size-[18px]">
-                  {service.icon}
-                </div>
-                <div>
-                  <h3 className="font-sans text-[.78rem] font-medium leading-4 text-black">{service.title}</h3>
-                  <p className="mt-1.5 font-sans text-[.72rem] leading-[1.4] text-[#8a786c]">{service.description}</p>
-                </div>
-              </div>
+        </ul>
+        <div className="mt-3 flex items-center justify-center gap-3">
+          <button type="button" onClick={() => goToArea(activeIndex - 1)} aria-label="Previous treatment" aria-controls={carouselId} className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-[#d5ad58]/35 text-[#171717] hover:bg-[#d5ad58] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d5ad58]">
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          </button>
+          <div className="flex">
+            {treatmentAreas.map((area, index) => (
+              <button key={area.id} type="button" onClick={() => goToArea(index)} aria-label={`Show ${area.name}`} aria-current={activeIndex === index ? "true" : undefined} aria-controls={carouselId} className="flex h-11 w-7 cursor-pointer items-center justify-center rounded focus-visible:outline-2 focus-visible:outline-[#d5ad58]">
+                <span className={`h-2 rounded-full transition-all motion-reduce:transition-none ${activeIndex === index ? "w-5 bg-[#d5ad58]" : "w-2 bg-[#171717]/20"}`} />
+              </button>
             ))}
           </div>
-        </Reveal>
-      </div>
+          <button type="button" onClick={() => {
+            const carousel = carouselRef.current;
+            const atEnd = carousel && carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 2;
+            goToArea(atEnd ? 0 : activeIndex + 1);
+          }} aria-label="Next treatment" aria-controls={carouselId} className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-[#d5ad58]/35 text-[#171717] hover:bg-[#d5ad58] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d5ad58]">
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </button>
+          <p className="sr-only" aria-atomic="true">Treatment {activeIndex + 1} of {treatmentAreas.length}: {treatmentAreas[activeIndex].name}</p>
+        </div>
+
+        <div className="mt-6 flex flex-col items-center gap-5 text-center sm:mt-8 sm:gap-6">
+          <p className="max-w-[760px] font-sans text-[.85rem] leading-[1.7] text-[#171717]/65 sm:text-[.95rem]">
+            Explore personalised skin and hair care, with treatment recommendations tailored to your goals during your consultation.
+          </p>
+          <button type="button" onClick={openBookingModal} className="inline-flex w-full cursor-pointer items-center justify-between gap-3 rounded-full bg-[#d5ad58] py-2.5 pl-6 pr-2.5 font-sans text-xs font-bold uppercase tracking-[.08em] text-[#292d22] shadow-sm transition-colors hover:bg-[#e5bd65] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d5ad58] sm:w-auto sm:text-[.8rem]">
+            Book Your Consultation
+            <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-[#171717]">
+              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+            </span>
+          </button>
+        </div>
       </div>
     </section>
-  )
+  );
 }

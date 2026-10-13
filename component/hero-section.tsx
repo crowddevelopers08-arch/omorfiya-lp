@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useBookingModal } from "@/component/booking-modal-context"
 
 const trustSignals = [
@@ -13,76 +13,79 @@ const trustSignals = [
 ]
 
 const treatments = [
-  { name: "Liposuction", image: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955311/banner-1.png", mobileImage: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955311/banner-mbl-1.png" },
-  { name: "Tummy Tuck", image: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955311/banner-2.png", mobileImage: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955317/banner-mbl-2.png" },
-  { name: "Gynecomastia", image: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955312/banner-3.png", mobileImage: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955317/banner-mbl-3.png" },
-  { name: "Body Sculpting", image: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955317/banner-4.png", mobileImage: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955317/banner-mbl-4.png" },
-  { name: "Hair Transplant", image: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955311/banner-5.png", mobileImage: "https://res.cloudinary.com/m5fcfwt7/image/upload/v1788955318/banner-mbl-5.png" },
+  { name: "Medifacials", image: "/images/treatments/medifacials.jpg", alt: "Aesthetician providing a facial skin treatment" },
+  { name: "Laser Hair Reduction (LHR)", image: "/images/treatments/laser-hair-reduction.jpg", alt: "Professional laser hair removal treatment" },
+  { name: "Radio Frequency", image: "/images/treatments/radio-frequency.jpg", alt: "Facial skincare treatment using a handheld device" },
+  { name: "Hair GFC", image: "/images/treatments/hair-gfc.jpg", alt: "Close-up of a scalp care device used during a hair assessment" },
+  { name: "Botox & Fillers", image: "/images/treatments/botox-fillers.jpg", alt: "Cosmetic practitioner administering a forehead injection" },
+  { name: "Hydrafacial", image: "/images/treatments/hydrafacial.jpg", alt: "Hydrafacial equipment used during a facial treatment" },
+  { name: "Laser Toning", image: "/images/treatments/laser-toning.jpg", alt: "Specialist providing a laser skin treatment" },
+  { name: "Carbon Laser", image: "/images/treatments/carbon-laser.jpg", alt: "Aesthetician providing a facial laser treatment" },
 ]
 
 export default function HeroSection() {
   const [activeTreatment, setActiveTreatment] = useState(0)
+  const treatmentRowRef = useRef<HTMLDivElement>(null)
   const { open: openBookingModal } = useBookingModal()
 
   useEffect(() => {
-    const interval = window.setInterval(() => {
-      setActiveTreatment((current) => (current + 1) % treatments.length)
-    }, 5000)
+    let interval: number | undefined
+    const startRotation = () => {
+      interval = window.setInterval(() => {
+        setActiveTreatment((current) => (current + 1) % treatments.length)
+      }, 5000)
+    }
 
-    return () => window.clearInterval(interval)
+    if (document.readyState === "complete") startRotation()
+    else window.addEventListener("load", startRotation, { once: true })
+
+    return () => {
+      window.removeEventListener("load", startRotation)
+      window.clearInterval(interval)
+    }
   }, [])
 
+  useEffect(() => {
+    const row = treatmentRowRef.current
+    const button = row?.children[activeTreatment] as HTMLButtonElement | undefined
+    if (!row || !button) return
+
+    const rowBounds = row.getBoundingClientRect()
+    const buttonBounds = button.getBoundingClientRect()
+    row.scrollTo({
+      left: row.scrollLeft + buttonBounds.left - rowBounds.left - (row.clientWidth - buttonBounds.width) / 2,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    })
+  }, [activeTreatment])
+
   return (
-    <section id="home" className="relative isolate flex max-sm:min-h-[520px] min-h-[620px] scroll-mt-24 items-center overflow-hidden bg-[#292d22] text-[#fffaf0] lg:h-svh lg:max-h-[500px]">
-      {/* mobile-only background image */}
-      <Image
-        key={treatments[activeTreatment].mobileImage}
-        src={treatments[activeTreatment].mobileImage}
-        alt={`${treatments[activeTreatment].name} treatment at Omorrfiya`}
-        fill
-        priority
-        sizes="100vw"
-        className="hero-image-zoom -z-20 object-cover object-center sm:hidden"
-      />
-
-      {/* tablet / desktop background image (unchanged) */}
-      <Image
-        key={treatments[activeTreatment].image}
-        src={treatments[activeTreatment].image}
-        alt={`${treatments[activeTreatment].name} treatment at Omorrfiya`}
-        fill
-        priority
-        sizes="100vw"
-        className="hero-image-zoom -z-20 hidden object-cover object-center sm:block"
-      />
-
-      {/* preload every other treatment image so swapping between them never shows a blank flash */}
-      <div className="hidden" aria-hidden="true">
-        {treatments.map((treatment) => (
-          <div key={`preload-${treatment.mobileImage}`} className="relative h-px w-px">
-            <Image src={treatment.mobileImage} alt="" fill sizes="100vw" priority />
-          </div>
-        ))}
-        {treatments.map((treatment) => (
-          <div key={`preload-${treatment.image}`} className="relative h-px w-px">
-            <Image src={treatment.image} alt="" fill sizes="100vw" priority />
-          </div>
-        ))}
+    <section id="home" className="relative isolate flex max-sm:min-h-[520px] min-h-[620px] scroll-mt-24 items-center overflow-hidden bg-[#292d22] text-[#fffaf0] lg:aspect-[16/7] lg:min-h-0">
+      <div className="absolute inset-0 -z-20">
+        <Image
+          key={treatments[activeTreatment].image}
+          src={treatments[activeTreatment].image}
+          alt={treatments[activeTreatment].alt}
+          fill
+          loading="eager"
+          fetchPriority="high"
+          sizes="100vw"
+          className="hero-image-zoom object-cover object-[center_65%]"
+        />
       </div>
 
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(31,35,26,0.98)_0%,rgba(41,45,34,0.92)_36%,rgba(41,45,34,0.62)_62%,rgba(41,45,34,0.2)_100%)]" />
       <div className="absolute inset-0 -z-10 bg-[#d5ad58]/[0.06]" />
 
       <div className="mx-auto w-full max-w-[1600px] px-5 py-10 sm:px-8 sm:py-12 lg:px-14 lg:py-8 xl:px-20">
-        <div className="max-w-[720px] xl:max-w-[780px]">
+        <div className="min-w-0 max-w-[720px] xl:max-w-[780px]">
           <h1 className="hero-reveal hero-delay-1 font-serif text-[clamp(2.25rem,4.25vw,4.55rem)] font-bold leading-[1.01] tracking-[-0.035em]">
-            Transform Your Body.{" "}
-            <span className="italic text-[#e5bd65]">Restore Your Hair.</span>{" "}
+            Refresh Your Skin.{" "}
+            <span className="italic text-[#e5bd65]">Revitalise Your Hair.</span>{" "}
             Elevate Your Confidence.
           </h1>
 
           <p className="hero-reveal hero-delay-2 mt-4 max-w-[650px] font-sans text-[clamp(.9rem,1.05vw,1.05rem)] leading-[1.65] text-white/80 sm:mt-5">
-            Advanced body contouring and hair restoration treatments with doctor-led care, modern technology and personalised treatment plans designed around your individual goals.
+            Discover medifacials, Hydrafacial, laser hair reduction, radio frequency, Hair GFC, Botox and fillers, laser toning and carbon laser treatments with doctor-led care and personalised plans for your skin and hair goals.
           </p>
 
           <div className="hero-reveal hero-delay-3 mt-5 border-y border-white/15 py-4">
@@ -99,7 +102,7 @@ export default function HeroSection() {
 
           <div className="hero-reveal hero-delay-4 mt-4">
             <h2 className="font-serif text-[.68rem] font-bold uppercase tracking-[0.24em] text-[#e5bd65]">Key Treatments</h2>
-            <div className="scrollbar-none -mx-5 mt-2.5 flex flex-nowrap gap-1.5 overflow-x-auto px-5 sm:mx-0 sm:flex-wrap sm:gap-2 sm:overflow-visible sm:px-0">
+            <div ref={treatmentRowRef} className="scrollbar-none mt-2.5 flex flex-nowrap items-center gap-2 overflow-x-hidden py-1">
               {treatments.map((treatment, index) => (
                 <button
                   key={treatment.name}
@@ -108,7 +111,7 @@ export default function HeroSection() {
                   onFocus={() => setActiveTreatment(index)}
                   onClick={() => setActiveTreatment(index)}
                   aria-pressed={activeTreatment === index}
-                  className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-sm transition sm:px-3.5 sm:text-[.82rem] ${
+                  className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-sm transition sm:px-3.5 sm:text-[.82rem] ${
                     activeTreatment === index
                       ? "border-[#d5ad58] bg-[#d5ad58] text-[#292d22]"
                       : "border-[#f3dda1]/30 bg-[#f3dda1]/10 hover:border-[#f3dda1]/60 hover:bg-[#f3dda1]/15"
@@ -129,6 +132,7 @@ export default function HeroSection() {
             <span className="relative">Book Your Consultation</span>
           </button>
         </div>
+
       </div>
     </section>
   )
