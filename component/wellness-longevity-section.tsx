@@ -20,7 +20,7 @@ const treatmentAreas = [
   { id: "laser-hair-reduction", name: "Laser Hair Reduction", alt: "Professional laser hair removal treatment" },
   { id: "radio-frequency", name: "Radio Frequency", alt: "Device-based facial skincare treatment" },
   { id: "hair-gfc", name: "Hair GFC", alt: "Scalp care and hair assessment" },
-  { id: "botox-fillers", name: "Botox & Fillers", alt: "Cosmetic practitioner administering a forehead injection" },
+  { id: "botox-fillers", name: "Non-Surgical Facial Aesthetics ", alt: "Cosmetic practitioner administering a forehead injection" },
   { id: "hydrafacial", name: "Hydrafacial", alt: "Hydrafacial equipment used during a facial treatment" },
   { id: "laser-toning", name: "Laser Toning", alt: "Specialist providing a laser skin treatment" },
   { id: "carbon-laser", name: "Carbon Laser", alt: "Aesthetician providing a facial laser treatment" },
@@ -104,8 +104,8 @@ export default function WellnessLongevitySection() {
           className="relative flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain rounded-[18px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d5ad58] lg:gap-5"
         >
           {treatmentAreas.map((area, index) => (
-            <li key={area.id} className="group min-w-0 shrink-0 basis-full sm:basis-[calc((100%_-_1rem)/2)] lg:basis-[calc((100%_-_3.75rem)/4)] snap-start snap-always overflow-hidden rounded-[18px] border border-[#171717]/8 bg-white transition-shadow duration-300 hover:shadow-lg motion-reduce:transition-none">
-              <div className="relative aspect-[4/5] overflow-hidden bg-[#eae4d8] sm:aspect-[5/4] lg:aspect-[4/5]">
+            <li key={area.id} className="group flex min-w-0 shrink-0 flex-col basis-full sm:basis-[calc((100%_-_1rem)/2)] lg:basis-[calc((100%_-_3.75rem)/4)] snap-start snap-always overflow-hidden rounded-[18px] border border-[#171717]/8 bg-white transition-shadow duration-300 hover:shadow-lg motion-reduce:transition-none">
+              <div className="relative aspect-[4/5] shrink-0 overflow-hidden bg-[#eae4d8] sm:aspect-[5/4] lg:aspect-[4/5]">
                 <Image
                   src={`/images/treatments/${area.id}.jpg`}
                   alt={area.alt}
@@ -123,7 +123,7 @@ export default function WellnessLongevitySection() {
                   </svg>
                 </div>
               </div>
-              <div className="relative flex min-h-[76px] items-center justify-center bg-[#d5ad58] px-4 py-4 text-center text-[#292d22] sm:px-5">
+              <div className="relative flex min-h-[76px] flex-1 items-center justify-center bg-[#d5ad58] px-4 py-4 text-center text-[#292d22] sm:px-5">
                 <h3 className="font-serif text-[clamp(1.35rem,1.6vw,1.65rem)] font-normal leading-tight">
                   <button type="button" onClick={openBookingModal} aria-label={`Book a consultation for ${area.name}`} className="cursor-pointer rounded px-2 py-1 font-serif focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#292d22]">{area.name}</button>
                 </h3>

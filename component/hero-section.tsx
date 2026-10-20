@@ -17,7 +17,7 @@ const treatments = [
   { name: "Laser Hair Reduction (LHR)", image: "/images/treatments/laser-hair-reduction.jpg", alt: "Professional laser hair removal treatment" },
   { name: "Radio Frequency", image: "/images/treatments/radio-frequency.jpg", alt: "Facial skincare treatment using a handheld device" },
   { name: "Hair GFC", image: "/images/treatments/hair-gfc.jpg", alt: "Close-up of a scalp care device used during a hair assessment" },
-  { name: "Botox & Fillers", image: "/images/treatments/botox-fillers.jpg", alt: "Cosmetic practitioner administering a forehead injection" },
+  { name: "Non-Surgical Facial Aesthetics ", image: "/images/treatments/botox-fillers.jpg", alt: "Cosmetic practitioner administering a forehead injection" },
   { name: "Hydrafacial", image: "/images/treatments/hydrafacial.jpg", alt: "Hydrafacial equipment used during a facial treatment" },
   { name: "Laser Toning", image: "/images/treatments/laser-toning.jpg", alt: "Specialist providing a laser skin treatment" },
   { name: "Carbon Laser", image: "/images/treatments/carbon-laser.jpg", alt: "Aesthetician providing a facial laser treatment" },
