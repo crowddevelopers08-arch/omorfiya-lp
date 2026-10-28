@@ -85,7 +85,7 @@ export default function HeroSection() {
           </h1>
 
           <p className="hero-reveal hero-delay-2 mt-4 max-w-[650px] font-sans text-[clamp(.9rem,1.05vw,1.05rem)] leading-[1.65] text-white/80 sm:mt-5">
-            Discover medifacials, Hydrafacial, laser hair reduction, radio frequency, Hair GFC, Botox and fillers, laser toning and carbon laser treatments with doctor-led care and personalised plans for your skin and hair goals.
+            Discover medifacials, Hydrafacial, laser hair reduction, radio frequency, Hair GFC, Non-Surgical Facial Aesthetics, laser toning and carbon laser treatments with doctor-led care and personalised plans for your skin and hair goals.
           </p>
 
           <div className="hero-reveal hero-delay-3 mt-5 border-y border-white/15 py-4">
