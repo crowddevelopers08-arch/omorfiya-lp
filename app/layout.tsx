@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BookingModalProvider } from "@/component/booking-modal-context";
+import PageLoader from "@/component/page-loader";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -39,6 +40,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           />
         </noscript>
         {/* End Google Tag Manager (noscript) */}
+        <PageLoader />
         <BookingModalProvider>{children}</BookingModalProvider>
       </body>
     </html>

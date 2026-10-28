@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, type FormEvent } from "react";
 import styles from "./equipment-rental-hero.module.css";
 
 const trustSignals = [
@@ -12,10 +11,26 @@ const trustSignals = [
   { title: "Dedicated Aftercare", icon: "m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6Z M9 12l2 2 4-4" },
 ];
 
+function SpinnerIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 animate-spin" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="3" className="opacity-25" />
+      <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export default function EquipmentRentalHero() {
-  const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // coming Back from the thank-you page can restore this page from the
+  // browser cache with the button still "Submitting..." — reset it
+  useEffect(() => {
+    const reset = (e: PageTransitionEvent) => { if (e.persisted) setSubmitting(false); };
+    window.addEventListener("pageshow", reset);
+    return () => window.removeEventListener("pageshow", reset);
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -45,8 +60,10 @@ export default function EquipmentRentalHero() {
         throw new Error(data?.error || "Something went wrong. Please try again.");
       }
 
-      form.reset();
-      router.push("/hair-transplant/thank-you");
+      // full page load to the thank-you page (shows the site page loader);
+      // the button stays in its loading state until the new page replaces this one
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full reload is intended
+      window.location.assign("/hair-transplant/thank-you");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       setSubmitting(false);
@@ -142,11 +159,13 @@ export default function EquipmentRentalHero() {
           <button
             type="submit"
             disabled={submitting}
-            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-[#292d22] px-5 py-3.5 text-[.75rem] font-bold uppercase tracking-[.08em] text-white transition-transform hover:-translate-y-0.5 hover:text-[#292d22] disabled:cursor-not-allowed disabled:opacity-70"
+            aria-busy={submitting}
+            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-[#292d22] px-5 py-3.5 text-[.75rem] font-bold uppercase tracking-[.08em] text-white transition-transform hover:-translate-y-0.5 hover:text-[#292d22] disabled:cursor-wait disabled:opacity-80 disabled:hover:translate-y-0 disabled:hover:text-white"
           >
-            <span aria-hidden className="absolute inset-0 scale-x-0 bg-white transition-transform duration-1000 ease-out group-hover:scale-x-100" />
+            <span aria-hidden className="absolute inset-0 scale-x-0 bg-white transition-transform duration-1000 ease-out group-hover:scale-x-100 group-disabled:scale-x-0" />
             <span className="relative inline-flex items-center gap-2">
               {/* <BookIcon /> */}
+              {submitting && <SpinnerIcon />}
               {submitting ? "Submitting..." : "Book Appointment"}
             </span>
           </button>

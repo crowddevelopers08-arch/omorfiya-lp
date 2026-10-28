@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 
 const concerns = [
   "Liposuction",
@@ -30,11 +29,32 @@ function ChevronDownIcon() {
   );
 }
 
+function SpinnerIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 animate-spin" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="3" className="opacity-25" />
+      <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export default function BookingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
+  const submittingRef = useRef(false);
+
+  useEffect(() => {
+    submittingRef.current = submitting;
+  }, [submitting]);
+
+  // coming Back from the thank-you page can restore this page from the
+  // browser cache with the button still "Submitting..." — reset it
+  useEffect(() => {
+    const reset = (e: PageTransitionEvent) => { if (e.persisted) setSubmitting(false); };
+    window.addEventListener("pageshow", reset);
+    return () => window.removeEventListener("pageshow", reset);
+  }, []);
 
   // lock page scroll while open, close on Escape, focus the first field
   useEffect(() => {
@@ -45,7 +65,7 @@ export default function BookingModal({ isOpen, onClose }: { isOpen: boolean; onC
     nameInputRef.current?.focus();
 
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape" && !submittingRef.current) onClose();
     }
     window.addEventListener("keydown", onKeyDown);
 
@@ -83,12 +103,12 @@ export default function BookingModal({ isOpen, onClose }: { isOpen: boolean; onC
         throw new Error(data?.error || "Something went wrong. Please try again.");
       }
 
-      form.reset();
-      onClose();
-      router.push("/thank-you-cm");
+      // full page load to the thank-you page (shows the site page loader);
+      // the button stays in its loading state until the new page replaces this one
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full reload is intended
+      window.location.assign("/thank-you-cm");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
-    } finally {
       setSubmitting(false);
     }
   }
@@ -96,7 +116,7 @@ export default function BookingModal({ isOpen, onClose }: { isOpen: boolean; onC
   return (
     <div
       className="modal-fade-in fixed inset-0 z-[200] flex items-center justify-center bg-black/60 px-4 py-8 backdrop-blur-sm"
-      onClick={onClose}
+      onClick={() => { if (!submitting) onClose(); }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="booking-modal-title"
@@ -108,8 +128,9 @@ export default function BookingModal({ isOpen, onClose }: { isOpen: boolean; onC
         <button
           type="button"
           onClick={onClose}
+          disabled={submitting}
           aria-label="Close"
-          className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full text-[#292d22]/50 transition-colors hover:bg-[#fbf9f4] hover:text-[#292d22]"
+          className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full text-[#292d22]/50 transition-colors hover:bg-[#fbf9f4] hover:text-[#292d22] disabled:cursor-not-allowed disabled:opacity-40"
         >
           <CloseIcon />
         </button>
@@ -188,10 +209,14 @@ export default function BookingModal({ isOpen, onClose }: { isOpen: boolean; onC
           <button
             type="submit"
             disabled={submitting}
-            className="group relative mt-2 inline-flex w-full items-center justify-center overflow-hidden rounded-full bg-[#d5ad58] px-6 py-3.5 font-sans text-xs font-bold uppercase tracking-[.08em] text-[#292d22] transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70 sm:text-[.8rem]"
+            aria-busy={submitting}
+            className="group relative mt-2 inline-flex w-full items-center justify-center overflow-hidden rounded-full bg-[#d5ad58] px-6 py-3.5 font-sans text-xs font-bold uppercase tracking-[.08em] text-[#292d22] transition-transform hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-80 disabled:hover:translate-y-0 sm:text-[.8rem]"
           >
-            <span aria-hidden className="absolute inset-0 scale-x-0 bg-white transition-transform duration-1000 ease-out group-hover:scale-x-100" />
-            <span className="relative">{submitting ? "Submitting..." : "Submit Request"}</span>
+            <span aria-hidden className="absolute inset-0 scale-x-0 bg-white transition-transform duration-1000 ease-out group-hover:scale-x-100 group-disabled:scale-x-0" />
+            <span className="relative inline-flex items-center gap-2">
+              {submitting && <SpinnerIcon />}
+              {submitting ? "Submitting..." : "Submit Request"}
+            </span>
           </button>
         </form>
       </div>
