@@ -34,8 +34,8 @@ function MenuIcon({ open }: { open: boolean }) {
 const navLinks = HT_NAV_LINKS;
 
 // Placeholder number — swap for the clinic's real contact line.
-const PHONE_DISPLAY = "+919876543210";
-const PHONE_HREF = "tel:+919876543210";
+const PHONE_DISPLAY = "+918422843155";
+const PHONE_HREF = "tel:+918422843155";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
