@@ -78,6 +78,12 @@ export default function DenartFooter() {
                 +91 9702013155
               </a>
               <a
+                href="tel:+918422843155"
+                className="mt-2 block w-fit border-dotted border-[#c9c2b4] pb-0.5 text-[15px] font-sans text-[#9c762d]"
+              >
+                +91 8422843155
+              </a>
+              <a
                 href="mailto:info@omorrfiya.com"
                 className="mt-2 block w-fit border-dotted border-[#c9c2b4] pb-0.5 text-[15px] text-[#373c2e]/70"
               >

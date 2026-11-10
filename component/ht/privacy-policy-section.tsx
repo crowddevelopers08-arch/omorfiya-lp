@@ -37,7 +37,7 @@ const sections = [
   },
   {
     title: "10. Contact Us",
-    body: "If you have any questions about this Privacy Policy or how your information is handled, please reach out to us at info@omorrfiya.com or +91 9702013155, or visit us at Unit 1301B & 804B, 81 Crest, Linking Road, Santacruz (West), Mumbai, Maharashtra 400054.",
+    body: "If you have any questions about this Privacy Policy or how your information is handled, please reach out to us at info@omorrfiya.com or +91 9702013155 or +91 8422843155, or visit us at Unit 1301B & 804B, 81 Crest, Linking Road, Santacruz (West), Mumbai, Maharashtra 400054.",
   },
 ];
 
